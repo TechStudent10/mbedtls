@@ -374,3 +374,41 @@ if(ENABLE_TESTING)
                     ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl COPYONLY)
     endif()
 endif()
+
+option(DISABLE_PACKAGE_CONFIG_AND_INSTALL "Disable package configuration, target export and installation" ON)
+
+if(NOT DISABLE_PACKAGE_CONFIG_AND_INSTALL)
+    configure_package_config_file(
+        "cmake/MbedTLSConfig.cmake.in"
+        "cmake/MbedTLSConfig.cmake"
+            INSTALL_DESTINATION "cmake")
+
+    write_basic_package_version_file(
+        "cmake/MbedTLSConfigVersion.cmake"
+            COMPATIBILITY SameMajorVersion
+            VERSION 4.0.0)
+
+    install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake/MbedTLSConfig.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/cmake/MbedTLSConfigVersion.cmake"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/MbedTLS")
+
+    export(
+        EXPORT MbedTLSTargets
+        NAMESPACE MbedTLS::
+        FILE "cmake/MbedTLSTargets.cmake")
+
+    install(
+        EXPORT MbedTLSTargets
+        NAMESPACE MbedTLS::
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/MbedTLS"
+        FILE "MbedTLSTargets.cmake")
+
+    if(CMAKE_VERSION VERSION_GREATER 3.15 OR CMAKE_VERSION VERSION_EQUAL 3.15)
+        # Do not export the package by default
+        cmake_policy(SET CMP0090 NEW)
+
+        # Make this package visible to the system
+        export(PACKAGE MbedTLS)
+    endif()
+endif()
