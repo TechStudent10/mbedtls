@@ -22,6 +22,8 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
+include(CMakePackageConfigHelpers)
+
 # https://cmake.org/cmake/help/latest/policy/CMP0011.html
 # Setting this policy is required in CMake >= 3.18.0, otherwise a warning is generated. The OLD
 # policy setting is deprecated, and will be removed in future versions.
@@ -275,7 +277,6 @@ endif(ENABLE_ZLIB_SUPPORT)
 add_subdirectory(include)
 
 add_subdirectory(3rdparty)
-list(APPEND libs ${thirdparty_lib})
 
 add_subdirectory(library)
 
